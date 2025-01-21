@@ -36,4 +36,18 @@ fn main() {
 
     let user3 = build_user(String::from("steve"), String::from("steve@gmail.com"));
     println!("user 3 from build_user username: {}", user3.username);
+
+    //  In this example, we can no longer use user3 as a whole after creating user4
+    // because the String in the username field of user3 was moved into user4.
+    // If we had given user4 new String values for both email and username,
+    // and thus only used the active and sign_in_count values from user3,
+    // then user3 would still be valid after creating user4.
+    // Both active and sign_in_count are types that implement the Copy trait,
+    // so the behavior we discussed in the “Stack-Only Data: Copy” section would apply.
+    // We can still use user3.email in this example, since its value was not moved out.
+
+    let user4 = User {
+        email: String::from("someother@gmail.com"),
+        ..user3
+    };
 }
