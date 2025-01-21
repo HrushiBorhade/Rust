@@ -5,7 +5,6 @@ struct Rectangle {
 }
 
 fn main() {
-
     println!("Calculate area of rectangle with width = 30 and height = 50");
     let rect1 = Rectangle {
         width:30,
