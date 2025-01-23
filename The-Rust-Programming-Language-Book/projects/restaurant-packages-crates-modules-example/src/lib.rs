@@ -1,4 +1,4 @@
-fn random_function() {}
+use std::collections::HashMap;
 
 mod front_of_house {
     pub mod hosting {
@@ -40,11 +40,13 @@ mod back_of_house {
     }
 }
 
-
+use crate::front_of_house::hosting;
 pub fn eat_at_restaurant() {
     // absolute path
-    crate::front_of_house::hosting::add_to_waitlist();
+    hosting::add_to_waitlist();
 
+    let mut map = HashMap::new();
+    map.insert(1,2);
     // relative path 
     front_of_house::hosting::add_to_waitlist();
     let mut  breakfast = back_of_house::Breakfast::summer("Wheat");
