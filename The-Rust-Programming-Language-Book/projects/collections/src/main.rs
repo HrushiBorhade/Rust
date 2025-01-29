@@ -1,9 +1,10 @@
 mod vector;
+mod string;
 use std::collections::HashMap;
 
 fn main() {
     vector::demonstrate_vector_operations();
-
+    string::demonstrate_string_operations();
     let mut scores = HashMap::new();
 
     scores.insert(String::from("Blue"), 10);
