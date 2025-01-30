@@ -2,7 +2,6 @@ use std::fs::File;
 use std::io::ErrorKind;
 
 pub fn demonstrate_recoverable_errors() {
-
     let greeting_file_result = File::open("hello.txt");
     let greeting_file = match greeting_file_result {
         Ok(file) => file,
@@ -15,7 +14,8 @@ pub fn demonstrate_recoverable_errors() {
         },
     };
 
-//  Shortcuts for Panic on Error: unwrap and expect
+    //  Shortcuts for Panic on Error: unwrap and expect
     let file_with_unwrap = File::open("random.txt").unwrap();
-    let file_with_expect = File::open("random.txt").expect("random.txt should be included in this project");
+    let file_with_expect =
+        File::open("random.txt").expect("random.txt should be included in this project");
 }
