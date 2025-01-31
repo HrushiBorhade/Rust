@@ -1,11 +1,21 @@
+use std::fmt::{Debug, Display};
 pub trait Summary {
     fn summarize(&self) -> String {
         format!("(Read more ...)")
     }
 }
 
-pub fn notify(item :&impl Summary) {
+pub fn notify(item: &impl Summary) {
     println!("Breaking news! {}", item.summarize());
+}
+
+fn some_function<T, U>(t: &T, u: &U) -> i32
+where
+    T: Display + Clone,
+    U: Clone + Debug,
+{
+    println!("inside some_function");
+    0
 }
 
 pub struct NewsArticle {
