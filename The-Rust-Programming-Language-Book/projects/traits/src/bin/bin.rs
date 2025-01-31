@@ -1,4 +1,4 @@
-use aggregator::{Summary, Tweet};
+use aggregator::{Summary, Tweet, notify};
 fn main() {
     let tweet = Tweet {
         username: String::from("horse_ebooks"),
@@ -8,4 +8,6 @@ fn main() {
     };
 
     println!("1 new tweet: {}", tweet.summarize());
+
+    notify(&tweet);
 }
