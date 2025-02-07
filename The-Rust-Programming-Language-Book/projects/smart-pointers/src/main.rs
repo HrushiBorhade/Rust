@@ -1,5 +1,6 @@
 use crate::List::{Cons, Nil};
 use std::ops::Deref;
+use std::mem::drop;
 
 #[derive(Debug)]
 enum List<T> {
@@ -20,6 +21,17 @@ impl<T> Deref for MyBox<T> {
     type Target = T;
     fn deref(&self) -> &Self::Target {
         &self.0
+    }
+}
+
+#[derive(Debug)]
+struct CustomSmartPointer {
+    data: String
+}
+
+impl Drop for CustomSmartPointer {
+    fn drop(&mut self) {
+        println!("Dropping CustomSmartPointer with data `{}`!", self.data);
     }
 }
 
@@ -44,7 +56,20 @@ fn main() {
     //Deref Coercion
     hello("Rust");
     hello(&MyBox("world"));
-    
+
+    // Drop trait - automatically calls after it is out of scope
+    let c = CustomSmartPointer {
+        data: String::from("random shit")
+    };
+    let d = CustomSmartPointer {
+        data: String::from("random shit 2")
+    };
+
+    println!("CustomSmartPointers c and d created");
+    drop(d);
+    println!("d is now dropped before getting out of scope");
+    println!("Out of scope")
+
 }
 
 fn hello(name: &str) {
