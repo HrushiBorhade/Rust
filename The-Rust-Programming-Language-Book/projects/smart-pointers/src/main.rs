@@ -79,6 +79,7 @@ fn main() {
     }
     println!("count after a3 goes out of scope = {}", Rc::strong_count(&a1));
     println!("Out of scope");
+
 }
 
 fn hello(name: &str) {
