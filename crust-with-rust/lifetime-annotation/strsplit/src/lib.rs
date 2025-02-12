@@ -1,14 +1,40 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
+#[derive(Debug)]
+pub struct StrSplit<'a> {
+    remainder: &'a str,
+    delimiter: &'a str,
+}
+impl<'a> StrSplit<'a> {
+    pub fn new(haystack: &'a str, delimiter: &'a str) -> Self {
+        Self {
+            remainder: haystack,
+            delimiter,
+        }
+    }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+impl<'a> Iterator for StrSplit<'a> {
+    type Item = &'a str;
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+    fn next(&mut self) -> Option<Self::Item> {
+        if let Some(next_delim) = self.remainder.find(self.delimiter) {
+            let untill_delimeter = &self.remainder[..next_delim];
+            self.remainder = &self.remainder[(next_delim + self.delimiter.len())..];
+            Some(untill_delimeter)
+        } else if self.remainder.is_empty() {
+            None
+        } else {
+            let rest = self.remainder;
+            self.remainder = "";
+            Some(rest)
+        }
     }
+}
+
+#[test]
+fn it_works() {
+    let haystack = "a b c d e";
+    let delimiter = " ";
+    let res: Vec<&str> = StrSplit::new(haystack, delimiter).collect();
+    println!("collected res: {:#?}", res);
+    assert_eq!(res, vec!["a", "b", "c", "d", "e"]);
 }
