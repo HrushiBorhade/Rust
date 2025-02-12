@@ -38,3 +38,12 @@ fn it_works() {
     println!("collected res: {:#?}", res);
     assert_eq!(res, vec!["a", "b", "c", "d", "e"]);
 }
+
+#[test]
+fn tail() {
+    let haystack = "a b c d ";
+    let delimiter = " ";
+    let res: Vec<&str> = StrSplit::new(haystack, delimiter).collect();
+    println!("collected res: {:#?}", res);
+    assert_eq!(res, vec!["a", "b", "c", "d", ""]);
+}
