@@ -1,6 +1,9 @@
 use std::collections::HashMap;
 use std::error::Error;
+use tokio::fs::File;
+use tokio::io::{self, AsyncReadExt};
 use tokio::time::{sleep, Duration};
+
 #[tokio::main]
 async fn main() {
     println!("hello from async world");
@@ -13,10 +16,11 @@ async fn main() {
     handle2.await;
     handle3.await;
 
-    getAPIResponse().await;
+    get_api_response().await;
+    read_content().await;
 }
 
-async fn getAPIResponse() -> Result<(), Box<dyn Error>> {
+async fn get_api_response() -> Result<(), Box<dyn Error>> {
     let resp = reqwest::get("https://httpbin.org/ip")
         .await?
         .json::<HashMap<String, String>>()
@@ -25,6 +29,14 @@ async fn getAPIResponse() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+async fn read_content() -> io::Result<()> {
+    let mut file = File::open("example.txt").await?;
+    let mut contents = String::new();
+    file.read_to_string(&mut contents).await?;
+
+    println!("File Contents: {}", contents);
+    Ok(())
+}
 async fn greet() {
     println!("Hello, how are you doin?");
     sleep(Duration::from_secs(1)).await;
