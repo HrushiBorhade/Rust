@@ -1,5 +1,6 @@
+use std::collections::HashMap;
+use std::error::Error;
 use tokio::time::{sleep, Duration};
-
 #[tokio::main]
 async fn main() {
     println!("hello from async world");
@@ -11,6 +12,17 @@ async fn main() {
     handle1.await;
     handle2.await;
     handle3.await;
+
+    getAPIResponse().await;
+}
+
+async fn getAPIResponse() -> Result<(), Box<dyn Error>> {
+    let resp = reqwest::get("https://httpbin.org/ip")
+        .await?
+        .json::<HashMap<String, String>>()
+        .await?;
+    println!("{resp:#?}");
+    Ok(())
 }
 
 async fn greet() {
