@@ -1,43 +1,47 @@
 use std::{
     fs,
-    io::{prelude::*, BufReader},
+    io::{prelude::*, BufReader, Result},
     net::{TcpListener, TcpStream},
 };
+
 fn main() {
-    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+    let listener = match TcpListener::bind("127.0.0.1:7878") {
+        Ok(listener) => listener,
+        Err(e) => {
+            eprintln!("Failed to bind to address: {}", e);
+            return;
+        }
+    };
 
     for stream in listener.incoming() {
-        let stream = stream.unwrap();
-
-        println!("Connection Established");
-        handle_connection_selectively(stream);
-        //        handle_connection(stream);
+        let stream = match stream {
+            Ok(stream) => {
+                println!("Connection Established");
+                if let Err(e) = handle_connection(stream) {
+                    eprintln!("Error handling connection: {}", e);
+                }
+            }
+            Err(e) => {
+                eprintln!("Failed to establish connection: {}", e);
+            }
+        };
     }
 }
-fn handle_connection(mut stream: TcpStream) {
-    let buf_reader = BufReader::new(&stream);
-    let http_request: Vec<_> = buf_reader
-        .lines()
-        .map(|result| result.unwrap())
-        .take_while(|line| !line.is_empty())
-        .collect();
-    println!("Http request: {http_request:#?}");
-    let status_line = "HTTP/1.1 200 OK";
-    let contents = fs::read_to_string("hello.html").unwrap();
-    let length = contents.len();
 
-    // Ensure correct header-body separation with \r\n\r\n
-    let response = format!(
-        "{status_line}\r\nContent-Length: {length}\r\nContent-Type: text/html\r\n\r\n{contents}"
-    );
-
-    stream.write_all(response.as_bytes()).unwrap();
-}
-
-fn handle_connection_selectively(mut stream: TcpStream) {
+fn handle_connection(mut stream: TcpStream) -> Result<()> {
     let buf_reader = BufReader::new(&stream);
 
-    let request_line = buf_reader.lines().next().unwrap().unwrap();
+    let request_line = match buf_reader.lines().next() {
+        Some(Ok(line)) => line,
+        Some(Err(e)) => {
+            eprintln!("Error handling request line: {}", e);
+            return Err(e);
+        }
+        None => {
+            eprintln!("Client disconnected before sending request");
+            return Ok(());
+        }
+    };
 
     let (status_line, filename) = if request_line == "GET / HTTP/1.1" {
         ("HTTP/1.1 200 OK", "hello.html")
@@ -45,10 +49,13 @@ fn handle_connection_selectively(mut stream: TcpStream) {
         ("HTTP/1.1 404 NOT FOUND", "404.html")
     };
 
-    let contents = fs::read_to_string(filename).unwrap();
+    let contents =
+        fs::read_to_string(filename).unwrap_or_else(|_| String::from("Error loading page"));
+
     let length = contents.len();
 
     let response = format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}");
 
-    stream.write_all(response.as_bytes()).unwrap();
+    stream.write_all(response.as_bytes())?;
+    Ok(())
 }
