@@ -16,11 +16,12 @@ fn main() {
         }
     };
 
+    let pool = ThreadPool::new(5);
     for stream in listener.incoming() {
         let _stream = match stream {
             Ok(stream) => {
                 println!("Connection Established");
-                thread::spawn(move || {
+                pool.execute(move || {
                     if let Err(e) = handle_connection(stream) {
                         eprintln!("Error handling connection: {:?}", e);
                     }
