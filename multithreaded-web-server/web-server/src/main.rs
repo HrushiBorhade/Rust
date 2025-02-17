@@ -16,12 +16,14 @@ fn main() {
     };
 
     for stream in listener.incoming() {
-        let stream = match stream {
+        let _stream = match stream {
             Ok(stream) => {
                 println!("Connection Established");
-                if let Err(e) = handle_connection(stream) {
-                    eprintln!("Error handling connection: {}", e);
-                }
+                thread::spawn(move || {
+                    if let Err(e) = handle_connection(stream) {
+                        eprintln!("Error handling connection: {:?}", e);
+                    }
+                });
             }
             Err(e) => {
                 eprintln!("Failed to establish connection: {}", e);
@@ -46,10 +48,10 @@ fn handle_connection(mut stream: TcpStream) -> Result<()> {
     };
 
     let (status_line, filename) = match &request_line[..] {
-        "GET / HTTP/1.1" => ("HTTP/1.1 200 OK", "hello.html"),
+        "GET / HTTP/1.1" => ("HTTP/1.1 200 OK", "welcome.html"),
         "GET /sleep HTTP/1.1" => {
             thread::sleep(Duration::from_secs(5));
-            ("HTTP/1.1 200 OK", "hello.html")
+            ("HTTP/1.1 200 OK", "slow-request.html")
         }
         _ => ("HTTP/1.1 404 NOT FOUND", "404.html"),
     };
