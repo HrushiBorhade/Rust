@@ -1,4 +1,8 @@
-pub struct ThreadPool;
+use std::thread;
+
+pub struct ThreadPool {
+    threads: thread::JoinHandle<()>,
+}
 
 impl ThreadPool {
     /// Create a new ThreadPool
@@ -11,7 +15,11 @@ impl ThreadPool {
     pub fn new(size: usize) -> Self {
         assert!(size > 0);
         println!("number of threads: {size}");
-        Self
+        let mut threads = Vec::with_capacity(size);
+        for _ in 0..size {
+            // add new thread to threads
+        }
+        ThreadPool { threads }
     }
 
     pub fn execute<F>(&self, f: F)
