@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome</title>
+    <title>404 - Page Not Found</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
@@ -15,29 +15,21 @@
             color: white;
             height: 100vh;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            position: relative;
+            font-size: 1.2rem;
         }
 
-        .welcome-text {
-            font-family: 'Pixelify Sans', monospace;
+        .error-text {
             display: flex;
             align-items: center;
-            min-height: 3.5em;
-            font-size: 30px;
+            font-family: 'Pixelify Sans', monospace;
         }
 
         .cursor {
             color: #FFD700;
             margin-left: 4px;
             animation: blink 1s infinite;
-            display: none;
-        }
-
-        .cursor.active {
-            display: inline;
         }
 
         @keyframes blink {
@@ -48,28 +40,8 @@
     </style>
 </head>
 <body>
-    <div class="welcome-text">
-        <span id="typed-text"></span><span class="cursor">█</span>
+    <div class="error-text">
+        404, page not found<span class="cursor">█</span>
     </div>
-
-    <script>
-        const text = "Welcome" ;
-        const typedTextElement = document.getElementById('typed-text');
-        const cursor = document.querySelector('.cursor');
-        let charIndex = 0;
-
-        // Show cursor immediately
-        cursor.classList.add('active');
-
-        function typeWriter() {
-            if (charIndex < text.length) {
-                typedTextElement.textContent += text.charAt(charIndex);
-                charIndex++;
-                setTimeout(typeWriter, 150);
-            }
-        }
-
-        typeWriter()
-    </script>
 </body>
 </html>
